@@ -31,9 +31,15 @@ class Login_c extends CI_Controller
         $sql = $this->db->query("SELECT * FROM TM_USER WHERE ltrim(rtrim(CHR_NPK))='$npk'"); 
 
         if ($sql->num_rows() > 0) {
-            $_SESSION['ip']  = $_SERVER['REMOTE_ADDR'];
-            $_SESSION['npk'] = $npk;
-            $_SESSION['username'] = $sql->row()->CHR_USERNAME;
+
+            $user_session = array(
+                'ip' => $_SERVER['REMOTE_ADDR'],
+                'npk' => $npk,
+                'username' => $sql->row()->CHR_USERNAME,   
+                'flag' => true
+            );
+            $this->session->set_userdata($user_session);
+
             redirect('Scan_c');
         } else {
 

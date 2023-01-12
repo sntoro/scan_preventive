@@ -7,19 +7,23 @@ class Scan_c extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        if (!isset($_SESSION['npk'])) {
-            redirect('Login_c');
-        }
+        $this->session_array = $this->session->all_userdata();
+		$this->npk = $this->session_array['npk'];
+		$this->username = $this->session_array['username'];
+        
+        if (!$this->npk) {
+			redirect('Login_c');
+		}
 
         $this->load->model('Scan_m');
     }
 
     public function index()
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
-        $pic = $_SESSION['npk'];
+        $pic = $this->npk;
         $get_user = $this->Scan_m->get_data_user_by_npk($pic);
         $data_user = $get_user->row();
         $data['role'] = $data_user->INT_ID_ROLE;
@@ -30,8 +34,8 @@ class Scan_c extends CI_Controller
 
     public function scan_qr_part($id_type)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $data['id_type'] = $id_type;
         $data['content'] = '/scan_qr_part_v';
@@ -40,10 +44,10 @@ class Scan_c extends CI_Controller
 
     public function detail_menu($qrcode, $id_type)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
-        $pic = $_SESSION['npk'];
+        $pic = $this->npk;
         $get_user = $this->Scan_m->get_data_user_by_npk($pic);
         $data_user = $get_user->row();
         $data['role'] = $data_user->INT_ID_ROLE;
@@ -75,8 +79,8 @@ class Scan_c extends CI_Controller
 
     public function scan_electrode()
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $data['content'] = '/menu_electrode_v';
         $this->load->view('/template/layout', $data);
@@ -90,8 +94,8 @@ class Scan_c extends CI_Controller
 
     public function scan_qr()
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $data['content'] = '/scan_v';
         $this->load->view('/template/layout', $data);
@@ -99,8 +103,8 @@ class Scan_c extends CI_Controller
 
     public function scan_repair()
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $query = $this->Scan_m->get_data_part_repair();
         $result = $query->result();
@@ -112,8 +116,8 @@ class Scan_c extends CI_Controller
 
     public function process_repair($qr_no = NULL)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $status = '-';
         if ($qr_no == NULL || $qr_no == '') {
@@ -177,8 +181,8 @@ class Scan_c extends CI_Controller
 
     public function scan_prev($qr_old)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $data['qr_no'] = $qr_old;
         $data['qr_new'] = '';
@@ -215,13 +219,13 @@ class Scan_c extends CI_Controller
 
     public function scan_new_qr($qr_old, $qr_new)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $data['qr_no'] = $qr_old;
         $data['qr_new'] = $qr_new;
 
-        $npk = $_SESSION['npk'];
+        $npk = $this->npk;
 
         if (is_null($qr_new) || $qr_new == '') {
             redirect('Scan_c/scan_new_qr/' . $qr_old . '/err');
@@ -322,7 +326,7 @@ class Scan_c extends CI_Controller
         $query = $query = $this->Scan_m->get_data_part($qr_old);
         $result = $query->result();
 
-        $pic = $_SESSION['npk'];
+        $pic = $this->npk;
         $datenow = date('Ymd');
         $timenow = date('His');
 
@@ -385,7 +389,7 @@ class Scan_c extends CI_Controller
     public function start_repair($qr_no)
     {
 
-        $pic = $_SESSION['npk'];
+        $pic = $this->npk;
         $datenow = date('Ymd');
         $timenow = date('His');
 
@@ -412,7 +416,7 @@ class Scan_c extends CI_Controller
     public function finish_repair($qr_no)
     {
 
-        $pic = $_SESSION['npk'];
+        $pic = $this->npk;
         $datenow = date('Ymd');
         $timenow = date('His');
 
@@ -537,8 +541,8 @@ class Scan_c extends CI_Controller
 
     public function show_list_drawing($id_part, $id_type, $drw_type)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $get_drw_list = $this->Scan_m->get_drawing_list($id_part, $drw_type);
         $result = $get_drw_list->result();
@@ -597,8 +601,8 @@ class Scan_c extends CI_Controller
 
     public function historical_preventive($part_code, $id_type)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $get_his_preventive = $this->Scan_m->get_historical_preventive(str_replace("--", "/", $part_code));
         $result = $get_his_preventive->result();
@@ -612,8 +616,8 @@ class Scan_c extends CI_Controller
 
     public function historical_repair($part_code, $id_type)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $get_his_repair = $this->Scan_m->get_historical_repair(str_replace("--", "/", $part_code));
         $result = $get_his_repair->result();
@@ -627,8 +631,8 @@ class Scan_c extends CI_Controller
 
     public function historical_change($part_code, $id_type)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $get_his_change = $this->Scan_m->get_historical_change(str_replace("--", "/", $part_code));
         $result = $get_his_change->result();
@@ -642,8 +646,8 @@ class Scan_c extends CI_Controller
 
     public function search_list_repair($part_code, $id_type, $key)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $get_his_repair = $this->Scan_m->get_historical_repair_by_key($part_code, $key);
         if ($get_his_repair->num_rows() > 0) {
@@ -740,8 +744,8 @@ class Scan_c extends CI_Controller
 
     public function show_list_manual($id_part, $id_type, $wi_type)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $group = 'WIS';
         $get_wi_list = $this->Scan_m->get_manual_list($group, $id_part, $wi_type);
@@ -802,8 +806,8 @@ class Scan_c extends CI_Controller
     public function process_preventive($id_part, $id_type, $stat)
     {
 
-        $pic = $_SESSION['npk'];
-        $user = $_SESSION['username'];
+        $pic = $this->npk;
+        $user = $this->username;
 
         $get_user = $this->Scan_m->get_data_user_by_npk($pic);
         $data_user = $get_user->row();
@@ -1038,8 +1042,8 @@ class Scan_c extends CI_Controller
     public function process_confirm_preventive($id_prev_detail, $id_type)
     {
 
-        $pic = $_SESSION['npk'];
-        $user = $_SESSION['username'];
+        $pic = $this->npk;
+        $user = $this->username;
 
         $get_user = $this->Scan_m->get_data_user_by_npk($pic);
         $data_user = $get_user->row();
@@ -1081,10 +1085,10 @@ class Scan_c extends CI_Controller
 
     public function finish_preventive($id_prev_detail)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
-        $pic = $_SESSION['npk'];
+        $pic = $this->npk;
         $datenow = date('Ymd');
         $timenow = date('His');
 
@@ -1206,8 +1210,8 @@ class Scan_c extends CI_Controller
 
     public function show_list_failure($id_part, $id_type, $wi_type)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $group = 'FTA';
         $get_wi_list = $this->Scan_m->get_manual_list($group, $id_part, $wi_type);
@@ -1259,8 +1263,8 @@ class Scan_c extends CI_Controller
     public function process_repair_v2($id_part, $id_type, $stat)
     {
 
-        $pic = $_SESSION['npk'];
-        $user = $_SESSION['username'];
+        $pic = $this->npk;
+        $user = $this->username;
 
         $get_user = $this->Scan_m->get_data_user_by_npk($pic);
         $data_user = $get_user->row();
@@ -1308,10 +1312,10 @@ class Scan_c extends CI_Controller
                     'CHR_PART_CODE' => $result->CHR_PART_CODE,
                     'INT_STROKE' => $act_stroke,
                     'INT_FLG_REPAIR' => '1',
-                    'CHR_START_REPAIR_BY' =>  $_SESSION['npk'],
+                    'CHR_START_REPAIR_BY' =>  $this->npk,
                     'CHR_START_REPAIR_DATE' => date('Ymd'),
                     'CHR_START_REPAIR_TIME' => date('His'),
-                    'CHR_CREATED_BY' =>  $_SESSION['npk'],
+                    'CHR_CREATED_BY' =>  $this->npk,
                     'CHR_CREATED_DATE' => date('Ymd'),
                     'CHR_CREATED_TIME' => date('His')
                 );
@@ -1382,8 +1386,8 @@ class Scan_c extends CI_Controller
     public function process_confirm_repair($id_repair, $id_type)
     {
 
-        $pic = $_SESSION['npk'];
-        $user = $_SESSION['username'];
+        $pic = $this->npk;
+        $user = $this->username;
 
         $get_user = $this->Scan_m->get_data_user_by_npk($pic);
         $data_user = $get_user->row();
@@ -1453,10 +1457,10 @@ class Scan_c extends CI_Controller
 
     public function finish_repair_v2($qr_no)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
-        $pic = $_SESSION['npk'];
+        $pic = $this->npk;
         $datenow = date('Ymd');
         $timenow = date('His');
         $id_repair = $this->input->post("id_repair");
@@ -1852,8 +1856,8 @@ class Scan_c extends CI_Controller
     public function save_checksheet($id_check, $id_prev)
     {
 
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $get_check = $this->Scan_m->get_checksheet_by_id($id_check);
         $data_check = $get_check->row();
@@ -2028,8 +2032,8 @@ class Scan_c extends CI_Controller
 
     public function save_spareparts($type_trans, $id_trans, $sp_area)
     {
-        $pic = $_SESSION['npk'];
-        $user = $_SESSION['username'];
+        $pic = $this->npk;
+        $user = $this->username;
 
         $data['npk'] = $pic;
         $data['username'] = $user;
@@ -2130,8 +2134,8 @@ class Scan_c extends CI_Controller
 
     public function order_spareparts($id_sp, $id_trans, $id_part, $id_type, $trans_type)
     {
-        $pic = $_SESSION['npk'];
-        $user = $_SESSION['username'];
+        $pic = $this->npk;
+        $user = $this->username;
 
         //===== Update 
         $data_save = array(
@@ -2151,8 +2155,8 @@ class Scan_c extends CI_Controller
 
     public function cancel_spareparts($id_sp, $id_trans, $id_part, $id_type, $trans_type)
     {
-        $pic = $_SESSION['npk'];
-        $user = $_SESSION['username'];
+        $pic = $this->npk;
+        $user = $this->username;
 
         //===== Update 
         $data_save = array(
@@ -2188,8 +2192,8 @@ class Scan_c extends CI_Controller
 
     public function update_spareparts($id_sp, $id_trans, $id_part, $id_type, $qty, $trans_type)
     {
-        $pic = $_SESSION['npk'];
-        $user = $_SESSION['username'];
+        $pic = $this->npk;
+        $user = $this->username;
 
         if ($qty == 0) {
             //===== Delete
@@ -2239,8 +2243,8 @@ class Scan_c extends CI_Controller
 
     public function order_all_spareparts($id_trans, $trans_type, $id_part, $id_type)
     {
-        $pic = $_SESSION['npk'];
-        $user = $_SESSION['username'];
+        $pic = $this->npk;
+        $user = $this->username;
 
         $data_save = array(
             'INT_FLG_ORDER' => 1,
@@ -2259,8 +2263,8 @@ class Scan_c extends CI_Controller
 
     public function download_drawing($id_drw, $type)
     {
-        $data['npk'] = $_SESSION['npk'];
-        $data['username'] = $_SESSION['username'];
+        $data['npk'] = $this->npk;
+        $data['username'] = $this->username;
 
         $get_drw = $this->Scan_m->get_drawing_by_id($id_drw);
         $result = $get_drw->row();
@@ -2360,7 +2364,7 @@ class Scan_c extends CI_Controller
             'CHR_PROBLEM' => $problem,
             'CHR_REMARKS' => $remark,
             'CHR_PART_CODE_AFTER' => $part_after,
-            'CHR_CREATED_BY' =>  $_SESSION['npk'],
+            'CHR_CREATED_BY' =>  $this->npk,
             'CHR_CREATED_DATE' => date('Ymd'),
             'CHR_CREATED_TIME' => date('His')
         );

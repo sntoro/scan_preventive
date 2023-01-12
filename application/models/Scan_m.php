@@ -13,10 +13,11 @@ class Scan_m extends CI_Model {
         return $sql;
     }
 
-    //===== Common Function for All Type of Preventive
     public function get_data_part_mte($qr_no, $type) {
         $sql = $this->db->query("SELECT * FROM TM_PARTS_MTE 
-                        WHERE CHR_PART_CODE = '$qr_no' AND CHR_TYPE = '$type' AND INT_FLAG_DELETE = '0'");
+        WHERE CHR_PART_CODE = '$qr_no' 
+        AND CHR_TYPE = '$type' 
+        AND INT_FLAG_DELETE = '0'");
 
         return $sql;
     }
@@ -499,5 +500,3 @@ class Scan_m extends CI_Model {
     }
 
 }
-
-?>
